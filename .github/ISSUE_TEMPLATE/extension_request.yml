@@ -1,0 +1,65 @@
+name: Extension Request
+description: Request a new extension for Qcker
+title: "[EXT] "
+labels: ["extension-request", "enhancement"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What type of extension?
+      options:
+        - Network Driver
+        - Storage Driver
+        - Security Scanner
+        - Log Driver
+        - Build Strategy
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Extension Name
+      description: What should the extension be called?
+      placeholder: "e.g., cilium, zfs, trivy"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should the extension do?
+      placeholder: "Describe the functionality..."
+    validations:
+      required: true
+
+  - type: input
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Why do you need this extension?
+      placeholder: "e.g., Need eBPF networking for better performance"
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Are there existing tools that do this?
+      placeholder: "e.g., Cilium, Calico, Flannel..."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing extensions
+          required: true
+        - label: I am willing to help implement this
+          required: false
