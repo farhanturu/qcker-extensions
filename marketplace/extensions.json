@@ -1,101 +1,115 @@
 {
   "marketplace": {
     "name": "Qcker Extensions Marketplace",
-    "version": "1.0.0",
-    "repository": "https://github.com/qcker/qcker-extensions",
-    "request_url": "https://github.com/qcker/qcker-extensions/issues/new?template=extension_request.yml",
-    "categories": [
-      "network",
-      "storage",
-      "security",
-      "logging",
-      "build",
-      "other"
-    ],
+    "version": "1.1.0",
+    "repository": "https://github.com/farhanturu/qcker-extensions",
+    "qcker_version": ">=1.1.0",
+    "request_url": "https://github.com/farhanturu/qcker-extensions/issues/new?template=extension_request.yml",
+    "categories": ["network", "storage", "security", "logging", "build", "monitoring", "other"],
     "extensions": [
       {
         "id": "com.qcker.ext.bridge",
         "name": "bridge",
         "display_name": "Bridge Network Driver",
-        "version": "1.0.0",
-        "description": "Default bridge networking for containers",
-        "author": "Qcker Team",
+        "version": "1.1.0",
+        "description": "Default bridge networking with NAT for containers",
+        "author": "PaongLabs",
         "category": "network",
         "built_in": true,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/bridge",
-        "license": "Apache-2.0"
+        "source": "https://github.com/farhanturu/qcker-extensions/tree/main/extensions/bridge",
+        "license": "Apache-2.0",
+        "capabilities": ["NetworkAccess", "ContainerLifecycle"]
       },
       {
         "id": "com.qcker.ext.overlayfs",
         "name": "overlayfs",
         "display_name": "OverlayFS Storage Driver",
-        "version": "1.0.0",
-        "description": "Default overlayfs storage backend",
-        "author": "Qcker Team",
+        "version": "1.1.0",
+        "description": "Copy-on-write filesystem for efficient storage",
+        "author": "PaongLabs",
         "category": "storage",
         "built_in": true,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/overlayfs",
-        "license": "Apache-2.0"
+        "source": "https://github.com/farhanturu/qcker-extensions/tree/main/extensions/overlayfs",
+        "license": "Apache-2.0",
+        "capabilities": ["FileSystemAccess", "ContainerLifecycle"]
       },
       {
         "id": "com.qcker.ext.trivy",
         "name": "trivy",
         "display_name": "Trivy Security Scanner",
-        "version": "1.0.0",
-        "description": "Vulnerability scanning using Trivy",
-        "author": "Qcker Team",
+        "version": "0.55.0",
+        "description": "Container vulnerability scanning using Trivy engine",
+        "author": "Aquasecurity",
         "category": "security",
         "built_in": false,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/trivy",
-        "license": "Apache-2.0"
+        "source": "https://github.com/aquasecurity/trivy",
+        "license": "Apache-2.0",
+        "capabilities": ["ContainerLifecycle", "SystemInfo"]
       },
       {
         "id": "com.qcker.ext.cilium",
         "name": "cilium",
         "display_name": "Cilium Network Driver",
-        "version": "1.0.0",
-        "description": "eBPF-based networking using Cilium",
-        "author": "Qcker Team",
+        "version": "1.15.0",
+        "description": "eBPF-based networking, observability and security",
+        "author": "Cilium Project",
         "category": "network",
         "built_in": false,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/cilium",
-        "license": "Apache-2.0"
+        "source": "https://github.com/cilium/cilium",
+        "license": "Apache-2.0",
+        "capabilities": ["NetworkAccess", "ContainerLifecycle", "Privileged"]
       },
       {
         "id": "com.qcker.ext.zfs",
         "name": "zfs",
         "display_name": "ZFS Storage Driver",
-        "version": "1.0.0",
-        "description": "ZFS storage backend for containers",
-        "author": "Qcker Team",
+        "version": "2.2.0",
+        "description": "ZFS advanced filesystem with snapshots and compression",
+        "author": "OpenZFS",
         "category": "storage",
         "built_in": false,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/zfs",
-        "license": "Apache-2.0"
+        "source": "https://github.com/openzfs/zfs",
+        "license": "UPL-1.0",
+        "capabilities": ["FileSystemAccess", "ContainerLifecycle"]
       },
       {
         "id": "com.qcker.ext.loki",
         "name": "loki",
         "display_name": "Loki Log Driver",
-        "version": "1.0.0",
-        "description": "Send container logs to Grafana Loki",
-        "author": "Qcker Team",
+        "version": "3.0.0",
+        "description": "Send container logs to Grafana Loki for aggregation",
+        "author": "Grafana Labs",
         "category": "logging",
         "built_in": false,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/loki",
-        "license": "Apache-2.0"
+        "source": "https://github.com/grafana/loki",
+        "license": "Apache-2.0",
+        "capabilities": ["RegistryAccess", "NetworkAccess"]
       },
       {
         "id": "com.qcker.ext.buildkit",
         "name": "buildkit",
         "display_name": "BuildKit Builder",
-        "version": "1.0.0",
-        "description": "BuildKit compatible image builder",
-        "author": "Qcker Team",
+        "version": "0.13.0",
+        "description": "Next-generation Dockerfile builder with cache",
+        "author": "Moby Project",
         "category": "build",
         "built_in": false,
-        "source": "https://github.com/qcker/qcker-extensions/tree/main/extensions/buildkit",
-        "license": "Apache-2.0"
+        "source": "https://github.com/moby/buildkit",
+        "license": "Apache-2.0",
+        "capabilities": ["ProcessSpawn", "FileSystemAccess"]
+      },
+      {
+        "id": "com.qcker.ext.healthcheck",
+        "name": "healthcheck",
+        "display_name": "Health Checker",
+        "version": "1.0.0",
+        "description": "Container health monitoring and alerts",
+        "author": "PaongLabs",
+        "category": "monitoring",
+        "built_in": false,
+        "source": "https://github.com/farhanturu/qcker-extensions/tree/main/extensions/healthcheck",
+        "license": "Apache-2.0",
+        "capabilities": ["ContainerLifecycle", "SystemInfo"]
       }
     ]
   }

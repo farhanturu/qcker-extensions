@@ -1,166 +1,74 @@
-# Qcker Extensions
+# Qcker Extensions Marketplace
 
-Official extension registry for the [Qcker container engine](https://github.com/farhanturu/qcker).
+Official extension registry for [Qcker](https://github.com/farhanturu/qcker) — A daemonless, rootless container engine.
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Qcker Version](https://img.shields.io/badge/qcker-v1.1.0-blue)](https://github.com/farhanturu/qcker/releases/tag/v1.1.0)
 
-**Production by [PaongLabs](https://github.com/farhanturu)**
+---
 
-## How It Works
+## Overview
 
-1. Browse extensions in the TUI Marketplace tab
-2. Install with `qcker extension install <name>`
-3. Uninstall with `qcker extension uninstall <name>`
-4. Request new extensions via [GitHub Issues](https://github.com/farhanturu/qcker-extensions/issues)
+This repository contains the official marketplace registry and extension definitions for Qcker. Extensions are compiled as shared libraries (`.so`) that plug into the Qcker runtime.
+
+## Directory Structure
+
+```
+qcker-extensions/
+├── extensions/              # Extension source code
+│   ├── bridge/             # Bridge network driver
+│   ├── overlayfs/          # OverlayFS storage driver
+│   ├── trivy/              # Vulnerability scanner
+│   ├── cilium/             # eBPF networking
+│   ├── zfs/                # ZFS storage backend
+│   ├── loki/               # Log aggregation
+│   └── buildkit/           # Image builder
+├── marketplace/
+│   └── extensions.json     # Registry manifest
+├── API.md                  # Extension SDK documentation
+├── CONTRIBUTING.md         # How to create extensions
+└── README.md
+```
+
+## Installing Extensions
+
+```bash
+# From CLI
+qcker extension install /path/to/extension
+qcker extension enable <id>
+qcker extension disable <id>
+qcker extension uninstall <id>
+qcker extension ls
+```
 
 ## Available Extensions
 
 | Extension | Category | Status | Description |
 |-----------|----------|--------|-------------|
 | bridge | network | Built-in | Default bridge networking |
-| overlayfs | storage | Built-in | Default overlayfs storage |
+| overlayfs | storage | Built-in | Copy-on-write storage |
 | trivy | security | Available | Vulnerability scanning |
-| cilium | network | Available | eBPF-based networking |
-| zfs | storage | Available | ZFS storage backend |
-| loki | logging | Available | Grafana Loki logging |
-| buildkit | build | Available | BuildKit compatible builder |
-
-## Installing Extensions
-
-```bash
-# Install from registry
-qcker extension install trivy
-
-# Install from local path
-qcker extension install /path/to/extension.so
-
-# List installed
-qcker extension ls
-
-# Uninstall
-qcker extension uninstall trivy
-```
-
-## Requesting Extensions
-
-Want a new extension? Open an issue:
-
-- [Request New Extension](https://github.com/farhanturu/qcker-extensions/issues/new?template=extension_request.yml)
-- [Report Bug](https://github.com/farhanturu/qcker-extensions/issues/new?template=bug_report.yml)
-
-## Contributing Extensions
-
-1. Fork this repository
-2. Create your extension in `extensions/<name>/`
-3. Add `manifest.json` with metadata
-4. Submit a pull request
-5. After review, it will appear in the marketplace
-
-### Extension Structure
-
-```
-extensions/my-extension/
-├── manifest.json      # Extension metadata
-├── README.md          # Documentation
-├── src/               # Source code (optional)
-│   └── lib.rs
-├── Cargo.toml         # Rust project (optional)
-└── libmyext.so        # Compiled binary
-```
-
-### manifest.json Format
-
-```json
-{
-  "id": "com.qcker.ext.my-extension",
-  "name": "my-extension",
-  "display_name": "My Extension",
-  "version": "1.0.0",
-  "api_version": "1.0.0",
-  "author": "Your Name",
-  "description": "What this extension does",
-  "category": "network|storage|security|logging|build|other",
-  "capabilities": ["NetworkAccess", "FileSystemAccess"],
-  "repository": "https://github.com/user/repo",
-  "license": "Apache-2.0"
-}
-```
-
-## Extension Categories
-
-| Category | Description | Examples |
-|----------|-------------|----------|
-| network | Network drivers | bridge, macvlan, cilium |
-| storage | Storage backends | overlayfs, zfs, btrfs |
-| security | Security scanners | trivy, grype, clair |
-| logging | Log drivers | json-file, loki, syslog |
-| build | Build strategies | dockerfile, buildkit, nix |
-| other | Other extensions | hooks, commands |
-
-## Extension API
-
-### Traits
-
-- `Extension` - Base trait (required)
-- `NetworkDriver` - Custom networking
-- `StorageDriver` - Custom storage
-- `SecurityScanner` - Vulnerability scanning
-- `LogDriver` - Custom logging
-- `BuildStrategy` - Custom builds
-- `HookExtension` - Lifecycle hooks
-- `CommandExtension` - Custom CLI commands
-
-### Capabilities
-
-Extensions can declare capabilities:
-- `NetworkAccess` - Can make network connections
-- `FileSystemAccess` - Can read/write filesystem
-- `ContainerLifecycle` - Can manage containers
-- `ImageAccess` - Can read/write images
-- `Privileged` - Needs root access
-- `SystemInfo` - Can read system information
-- `RegistryAccess` - Can access registries
-- `ProcessSpawn` - Can spawn subprocesses
+| cilium | network | Available | eBPF networking & security |
+| zfs | storage | Available | ZFS snapshots & compression |
+| loki | logging | Available | Grafana Loki log aggregation |
+| buildkit | build | Available | Fast Dockerfile builder |
 
 ## Development
 
-### Rust Extension
+See [API.md](API.md) for the extension SDK reference.
 
-```rust
-use qcker_ext_api::prelude::*;
+```bash
+# Clone the SDK
+git clone https://github.com/farhanturu/qcker-extensions.git
+cd qcker-extensions/extensions/my-extension
 
-#[derive(Default)]
-struct MyExtension;
+# Build
+cargo build --release --lib
 
-impl Extension for MyExtension {
-    fn id(&self) -> &str { "com.qcker.ext.my-extension" }
-    fn version(&self) -> &str { "1.0.0" }
-    fn name(&self) -> &str { "My Extension" }
-    fn description(&self) -> &str { "Does something cool" }
-    fn author(&self) -> &str { "Me" }
-    fn api_version(&self) -> &str { "1.0.0" }
-    fn capabilities(&self) -> Vec<ExtensionCapability> { vec![] }
-    fn on_load(&mut self, ctx: &ExtensionContext) -> Result<()> { Ok(()) }
-    fn on_unload(&mut self) -> Result<()> { Ok(()) }
-}
-
-qcker_extension!(MyExtension);
+# Install
+qcker extension install .
 ```
 
-### Other Languages
+---
 
-Extensions can be written in any language that supports Unix socket communication and JSON-RPC protocol.
-
-## Links
-
-- [Qcker Engine](https://github.com/farhanturu/qcker)
-- [Extension API Docs](https://github.com/farhanturu/qcker/tree/main/crates/qcker-ext-api)
-- [Request Extension](https://github.com/farhanturu/qcker-extensions/issues/new?template=extension_request.yml)
-
-## License
-
-Apache 2.0
-
-## Author
-
-**PaongLabs** - [GitHub](https://github.com/farhanturu)
+**Production by PaongLabs** · [Apache 2.0 License](LICENSE)
